@@ -17,6 +17,11 @@ public class TransacaoService {
         this.transacaoRepository = transacaoRepository;
     }
 
+    public DoubleSummaryStatistics getEstatisticasLastSeconds(Integer seconds) {
+        var allTransactions = transacaoRepository.findAllLastSeconds(seconds);
+        return allTransactions.map(Transacao::getValor).mapToDouble(BigDecimal::doubleValue).summaryStatistics();
+    }
+
     public void create(TransacaoInput input){
         var transacao = Transacao.Factories.create(input.valor(), input.dataHora());
         transacaoRepository.save(transacao);
@@ -24,10 +29,5 @@ public class TransacaoService {
 
     public void deleteAll() {
         transacaoRepository.deleteAll();
-    }
-
-    public DoubleSummaryStatistics getEstatisticasLastSeconds(Integer seconds) {
-        var allTransactions = transacaoRepository.findAllLastSeconds(seconds);
-        return allTransactions.map(Transacao::getValor).mapToDouble(BigDecimal::doubleValue).summaryStatistics();
     }
 }
