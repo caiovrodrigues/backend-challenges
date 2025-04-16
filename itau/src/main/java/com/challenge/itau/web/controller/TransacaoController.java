@@ -2,6 +2,7 @@ package com.challenge.itau.web.controller;
 
 import com.challenge.itau.service.TransacaoService;
 import com.challenge.itau.web.dto.TransacaoInput;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class TransacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody TransacaoInput input) {
+    public ResponseEntity<Void> create(@Valid @RequestBody TransacaoInput input) {
         transacaoService.create(input);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
