@@ -5,6 +5,9 @@ import com.challenge.itau.web.dto.TransacaoInput;
 import com.challenge.itau.web.repository.TransacaoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.DoubleSummaryStatistics;
+
 @Service
 public class TransacaoService {
 
@@ -21,5 +24,10 @@ public class TransacaoService {
 
     public void deleteAll() {
         transacaoRepository.deleteAll();
+    }
+
+    public DoubleSummaryStatistics getEstatisticasLastSeconds(Integer seconds) {
+        var allTransactions = transacaoRepository.findAllLastSeconds(seconds);
+        return allTransactions.stream().map(Transacao::getValor).mapToDouble(BigDecimal::doubleValue).summaryStatistics();
     }
 }
