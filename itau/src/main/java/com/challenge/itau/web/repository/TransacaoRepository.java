@@ -2,11 +2,11 @@ package com.challenge.itau.web.repository;
 
 import com.challenge.itau.domain.Transacao;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface TransacaoRepository {
 
-    List<Transacao> findAllLastSeconds(Integer seconds);
+    Stream<Transacao> findAllLastSeconds(Integer seconds);
 
     void save(Transacao input);
 

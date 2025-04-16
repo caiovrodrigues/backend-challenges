@@ -25,7 +25,6 @@ public class TransacaoController {
         return ResponseEntity.ok(transacaoService.getEstatisticasLastSeconds(seconds));
     }
 
-
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody TransacaoInput input) {
         transacaoService.create(input);

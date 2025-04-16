@@ -28,6 +28,6 @@ public class TransacaoService {
 
     public DoubleSummaryStatistics getEstatisticasLastSeconds(Integer seconds) {
         var allTransactions = transacaoRepository.findAllLastSeconds(seconds);
-        return allTransactions.stream().map(Transacao::getValor).mapToDouble(BigDecimal::doubleValue).summaryStatistics();
+        return allTransactions.map(Transacao::getValor).mapToDouble(BigDecimal::doubleValue).summaryStatistics();
     }
 }
