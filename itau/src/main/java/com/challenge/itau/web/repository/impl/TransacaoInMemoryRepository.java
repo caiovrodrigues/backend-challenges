@@ -16,4 +16,9 @@ public class TransacaoInMemoryRepository implements TransacaoRepository {
     public void save(Transacao transacao) {
         transacoes.add(transacao);
     }
+
+    @Override
+    public void deleteAll() {
+        transacoes.iterator().forEachRemaining(transacao -> transacoes.remove(transacao));
+    }
 }

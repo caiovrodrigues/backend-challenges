@@ -6,4 +6,5 @@ public interface TransacaoRepository {
 
     void save(Transacao input);
 
+    void deleteAll();
 }

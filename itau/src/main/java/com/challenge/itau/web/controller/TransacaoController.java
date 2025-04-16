@@ -5,10 +5,7 @@ import com.challenge.itau.web.dto.TransacaoInput;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/transacao")
@@ -24,6 +21,12 @@ public class TransacaoController {
     public ResponseEntity<Void> create(@Valid @RequestBody TransacaoInput input) {
         transacaoService.create(input);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete() {
+        transacaoService.deleteAll();
+        return ResponseEntity.ok().build();
     }
 
 }
