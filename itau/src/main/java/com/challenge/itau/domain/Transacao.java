@@ -8,11 +8,15 @@ import java.util.UUID;
 
 public class Transacao {
 
-    private final UUID id = UUID.randomUUID();
+    private final UUID id;
 
     private BigDecimal valor;
 
     private OffsetDateTime dataHora;
+
+    {
+        id = UUID.randomUUID();
+    }
 
     private Transacao(BigDecimal valor, OffsetDateTime dataHora){
         this.valor = valor;
