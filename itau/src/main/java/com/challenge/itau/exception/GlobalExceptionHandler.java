@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail validationError(MethodArgumentNotValidException e) {
-        var pb = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        var pb = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY);
 
         pb.setTitle("Your request parameters didn't validate.");
 
