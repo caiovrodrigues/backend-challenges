@@ -109,4 +109,26 @@ class TransacaoInMemoryRepositoryTest {
             assertEquals(0, result.count());
         }
     }
+
+    @Nested
+    class deleteAll{
+
+        @Test
+        @DisplayName("Should delete all transactions successfully")
+        void shouldDeleteAllTransactions(){
+            //Arrange
+            var transacao_1 = Transacao.Factories.create(BigDecimal.valueOf(600), OffsetDateTime.now().minusSeconds(30));
+            var transacao_2 = Transacao.Factories.create(BigDecimal.valueOf(400), OffsetDateTime.now().minusSeconds(40));
+            transacaoRepository.save(transacao_1);
+            transacaoRepository.save(transacao_2);
+
+            //Act
+            transacaoRepository.deleteAll();
+
+            //Assert
+            var transactionsAfterDelete = transacaoRepository.findAllLastSeconds(999_999).toList();
+            assertEquals(0, transactionsAfterDelete.size());
+        }
+    }
+
 }
