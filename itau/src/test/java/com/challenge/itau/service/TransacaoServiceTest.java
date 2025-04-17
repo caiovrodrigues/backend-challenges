@@ -8,13 +8,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.*;
 
-import static org.mockito.Mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +33,67 @@ class TransacaoServiceTest {
 
     @Captor
     ArgumentCaptor<Transacao> transacaoArgumentCaptor;
+
+    @Nested
+    class getEstatisticasLastSeconds{
+
+        @Test
+        @DisplayName("Should return a summary statistics of a single transaction")
+        void shouldReturnASummaryStatistics(){
+            //Arrange
+            var value = BigDecimal.valueOf(1_200);
+            var transacao = Transacao.Factories.create(value, OffsetDateTime.now());
+            doReturn(Stream.of(transacao)).when(transacaoRepository).findAllLastSeconds(anyInt());
+
+            //Act
+            var result = transacaoService.getEstatisticasLastSeconds(60);
+
+            //Assert
+            assertNotNull(result);
+            assertEquals(1, result.getCount());
+            assertEquals(value.longValue(), result.getMax());
+        }
+
+        @Test
+        @DisplayName("Should return correct statistics for transactions in the last 60 seconds")
+        void shouldReturnCorrectStatisticsForTransactionsInTheLast60Seconds(){
+            //Arrange
+            var valor_1 = BigDecimal.valueOf(600.25);
+            var valor_2 = BigDecimal.valueOf(400.50);
+            var transacao_1 = Transacao.Factories.create(valor_1, OffsetDateTime.now().minusSeconds(30));
+            var transacao_2 = Transacao.Factories.create(valor_2, OffsetDateTime.now().minusSeconds(40));
+
+            doReturn(Stream.of(transacao_1, transacao_2)).when(transacaoRepository).findAllLastSeconds(anyInt());
+            //Act
+            var result = transacaoService.getEstatisticasLastSeconds(60);
+
+            //Assert
+            verify(transacaoRepository, times(1)).findAllLastSeconds(60);
+            assertEquals(2, result.getCount());
+            assertEquals(transacao_1.getValor().doubleValue(), result.getMax());
+            assertEquals(transacao_2.getValor().doubleValue(), result.getMin());
+            assertEquals(valor_1.doubleValue() + valor_2.doubleValue(), result.getSum());
+            assertEquals((valor_1.doubleValue() + valor_2.doubleValue()) / 2.0, result.getAverage());
+        }
+
+        @Test
+        @DisplayName("Should return correct statistics when there is not any transaction")
+        void shouldReturnCorrectStatisticsWhenTransactionSizeIs0(){
+            //Arrange
+            doReturn(Stream.of()).when(transacaoRepository).findAllLastSeconds(60);
+
+            //Act
+            var result = transacaoService.getEstatisticasLastSeconds(60);
+
+            //Assert
+            assertEquals(0, result.getCount());
+            assertEquals(0, result.getSum());
+
+            assertEquals(Double.POSITIVE_INFINITY, result.getMin());
+            assertEquals(Double.NEGATIVE_INFINITY, result.getMax());
+            assertEquals(0, result.getAverage());
+        }
+    }
 
     @Nested
     class create{
