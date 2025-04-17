@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.DoubleSummaryStatistics;
 
 @ExtendWith(MockitoExtension.class)
 class TransacaoControllerTest {
@@ -25,6 +26,30 @@ class TransacaoControllerTest {
 
     @InjectMocks
     TransacaoController transacaoController;
+
+    @Nested
+    class estatisticasLastSeconds{
+
+        @Test
+        @DisplayName("Should return statistics from TransacaoService")
+        void shouldReturnStatisticsFromService(){
+            //Arrange
+            var expectedSeconds = 60;
+            var doubleSummaryStatistics = new DoubleSummaryStatistics(2, 100.0, 200.0, 300.0);
+            doReturn(doubleSummaryStatistics).when(transacaoService).getEstatisticasLastSeconds(eq(expectedSeconds));
+
+            //Act
+            var response = transacaoController.estatisticasLastSeconds(expectedSeconds);
+
+            //Assert
+            verify(transacaoService, times(1)).getEstatisticasLastSeconds(expectedSeconds);
+            verifyNoMoreInteractions(transacaoService);
+            var responseBody = response.getBody();
+            Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            Assertions.assertThat(responseBody).isNotNull();
+            Assertions.assertThat(responseBody).isEqualTo(doubleSummaryStatistics);
+        }
+    }
 
     @Nested
     class create{
