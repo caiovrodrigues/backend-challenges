@@ -16,10 +16,9 @@ public class TransacaoInMemoryRepository implements TransacaoRepository {
 
     private final List<Transacao> transacoes = new ArrayList<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Override
     public Stream<Transacao> findAllLastSeconds(Integer seconds) {
-        var dateTime = OffsetDateTime.now().minusSeconds(seconds);
+        var dateTime = OffsetDateTime.now().minusSeconds(seconds + 1);
         return transacoes.stream().filter(transacao -> transacao.getDataHora().isAfter(dateTime));
     }
 
