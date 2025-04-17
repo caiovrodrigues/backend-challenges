@@ -11,16 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.*;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransacaoServiceTest {
@@ -143,5 +139,21 @@ class TransacaoServiceTest {
             //Act & Assert
             assertThrows(RequestParamException.class, () -> transacaoService.create(input));
         }
+    }
+
+    @Nested
+    class deleteAll{
+
+        @Test
+        @DisplayName("Should call TransacaoRepository deleteAll method")
+        void shouldCallTransacaoRepositoryDeleteAllMethod(){
+            //Act
+            transacaoService.deleteAll();
+
+            //Assert
+            verify(transacaoRepository, times(1)).deleteAll();
+            verifyNoMoreInteractions(transacaoRepository);
+        }
+
     }
 }
